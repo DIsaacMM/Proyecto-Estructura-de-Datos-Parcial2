@@ -146,3 +146,31 @@ class Binary_Tree:
         return temp 
         
 tree = Binary_Tree()
+
+# Insertar nodos en el arbol
+n = int(input())
+while n>=100000:
+    n = input("Error numero muy grande ")
+
+nums = []
+for i in range(n):
+    # Capturar Numero   indice Izquierdo    Indice Derecha 
+    #nums[i] = str(input())
+    pass
+
+# 1 2 3
+# keys -1 <= key <= n
+
+# Preguntar como insertar los datos
+# Preguntar sobe las condicionales 
+
+
+
+# nums = str(input("Introduce primero la cantidad de numeros que tendra tu lista y despues escribe los numeros de la lista \n (todo separado por espacio): "))
+# lista = []
+# l = [int(i) for i in nums.split(' ')] # convertir string a lista de int
+# for j in range(len(l)):
+#     if j == 0:
+#         pass
+#     else:
+#         lista.append(l[j])
