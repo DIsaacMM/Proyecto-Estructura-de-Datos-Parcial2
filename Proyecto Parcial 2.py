@@ -11,12 +11,7 @@ class Node:
         self.val = val    
         self.left = None
         self.right = None
-        self.parent = None
-        
-        self.is_right = False
-        self.is_left = False
-        self.is_root = False
-        
+
 class Binary_Tree:
     def __init__(self):
         self.root = None
@@ -34,12 +29,12 @@ class Binary_Tree:
             self.root = new_node # El nuevo nodo se vuelve en la raiz
             new_node.is_root = True # El nuevo nodo se vuelve la raiz
         else:
-            prev_node = self.find_previous(prev_val, self.root)
-            prev_node.left = new_node
-        check = self.check_binary_tree(self.root, val)
-        if check == "Incorrect":
+            prev_node = self.find_previous(prev_val, self.root) # Se obtiene el nodo anterior al que se va a agregar
+            prev_node.left = new_node # Se agrega el nuevo nodo a la izquierda
+        check = self.check_binary_tree(self.root, val) # Se revisa si el arbol esta correcto
+        if check == "Incorrect": 
             print(check)
-            sys.exit()
+            sys.exit() # Detiene el programa
         self.weight += 1 # Se aumenta el peso del Arbol
 
     def insert_right_node(self, val, prev_val): # Funcion para meter un valor a la derecha
@@ -50,16 +45,15 @@ class Binary_Tree:
         else:
             prev_node = self.find_previous(prev_val, self.root)
             prev_node.right = new_node # Agrega el nuevo nodo a la derecha del ultimo nodo agregado
-        check = self.check_binary_tree(self.root, val)
+        check = self.check_binary_tree(self.root, val) # Se revisa si el arbol esta correcto
         if check == "Incorrect":
             print(check)
-            sys.exit()
+            sys.exit() # Detiene el programa
         self.weight += 1 # Se aumenta el peso del Arbol
 
     def find_previous(self, val, root): 
         if root is None:# Revisa si el árbol está vacío
             return None
-
         
         if root.val == val: # Si el nodo padre es la raiz
             # Retorna los hijos si existen
@@ -83,47 +77,6 @@ class Binary_Tree:
             return self.check_binary_tree(root.left, val)
         else:  # Si el valor es mayor, busca en el subarbol derecho
             return self.check_binary_tree(root.right, val)
-
-
-    def PrintTree(self, root):
-        def h(root):
-            return 1 + max(h(root.left), h(root.right)) if root else -1  
-        nlevels = h(root)
-        width =  pow(2,nlevels+1)
-
-        q=[(root,0,width,'c')]
-        levels=[]
-
-        while(q):
-            node,level,x,align= q.pop(0)
-            if node:            
-                if len(levels)<=level:
-                    levels.append([])
-        
-                levels[level].append([node,level,x,align])
-                seg= width//(pow(2,level+1))
-                q.append((node.left,level+1,x-seg,'l'))
-                q.append((node.right,level+1,x+seg,'r'))
-
-        for i,l in enumerate(levels):
-            pre=0
-            preline=0
-            linestr=''
-            pstr=''
-            seg= width//(pow(2,i+1))
-            for n in l:
-                valstr= str(n[0].val)
-                if n[3]=='r':
-                    linestr+=' '*(n[2]-preline-1-seg-seg//2)+  '-'*(seg +seg//2)+'\\'
-                    preline = n[2] 
-                if n[3]=='l':
-                   linestr+=' '*(n[2]-preline-1)+'/' + '-'*(seg+seg//2)  
-                   preline = n[2] + seg + seg//2
-                pstr+=' '*(n[2]-pre-len(valstr))+valstr 
-                pre = n[2]
-            print(linestr)
-            print(pstr)   
-        
         
 tree = Binary_Tree()
 
@@ -153,7 +106,7 @@ print(f"keys: {keys} \n")
 
 tree.insert_left_node(tree_vals[0], 0) # Se agrega el root
 
-j = 0 # Indice
+j = 0 
 i = 0 
 while j < len(keys):
     # insertar izquierdo
@@ -163,6 +116,8 @@ while j < len(keys):
     #insertar derecho
     if keys[j+1] != -1: # Si es -1 no se inserta nada
         tree.insert_right_node(tree_vals[keys[j+1]], tree_vals[i]) # insertar valores de acuerdo a lo establecido 
+    
+    # Se aumentan los valores de los indices
     j += 2
     i += 1
 print("Correct")
