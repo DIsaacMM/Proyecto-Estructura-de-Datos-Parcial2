@@ -4,6 +4,8 @@
 # David Isaac Mijares Meza (32948)
 # Steven Alexander McClellan Castro (37622)
 
+import sys 
+
 class Node:
     def __init__(self, val): # Un nodo tiene un valor y apunta al siguiente nodo
         self.val = val    
@@ -26,151 +28,141 @@ class Binary_Tree:
         else: 
             return False
     
-    def insert_node(self, val): 
+    def insert_left_node(self, val, prev_val): # Funcion para meter un valor a la derecha
         new_node = Node(val)
         if self.empty() == True: # Si el arbol esta vacio
             self.root = new_node # El nuevo nodo se vuelve en la raiz
             new_node.is_root = True # El nuevo nodo se vuelve la raiz
         else:
-            parent, side = self.position(val)
-            if side == "Izquierdo":
-                parent.left = new_node
-                new_node.is_left = True
-                new_node.parent = parent
-                
-            else:
-                parent.right = new_node
-                new_node.is_right = True
-                new_node.parent = parent               
-                
+            prev_node = self.find_previous(prev_val, self.root)
+            prev_node.left = new_node
+        check = self.check_binary_tree(self.root, val)
+        if check == "Incorrect":
+            print(check)
+            sys.exit()
         self.weight += 1 # Se aumenta el peso del Arbol
-        
-    def position(self, val): 
-        aux = self.root
-        
-        while aux: 
-            prev_aux = aux
-            if val <= prev_aux.val: 
-                aux = aux.left 
-                lado = "Izquierdo"
-                
-            else:
-                aux = aux.right
-                lado = "Derecho"
-        return prev_aux, lado
-         
-    def in_order(self, root):
-        if root:
-            self.in_order(root.left)  # Recorre el sub�rbol izquierdo
-            print(root.val, end=" ")  # Imprime el valor del nodo actual
-            self.in_order(root.right)  # Recorre el sub�rbol derecho
-           
-    def pos_order(self, root):
-        if root:
-            self.pos_order(root.left)  # Recorre el sub�rbol izquierdo
-            self.pos_order(root.right)  # Recorre el sub�rbol derecho
-            print(root.val, end=" ")  # Imprime el valor del nodo actual
-           
-    def pre_order(self, root):
-        if root:
-            print(root.val, end=" ")  # Imprime el valor del nodo actual
-            self.pre_order(root.left)  # Recorre el sub�rbol izquierdo
-            self.pre_order(root.right)  # Recorre el sub�rbol derecho
-            
-    def search(self, root, val):
-        if root is None:  # Caso base: si el nodo es nulo, no se encontr� el valor
-            return None
-        elif root.val == val:  # Si encontramos el nodo con el valor que buscamos
-            return root
-        elif root.val > val:  # Si el valor es menor, busca en el sub�rbol izquierdo
-            return self.search(root.left, val)
-        else:  # Si el valor es mayor, busca en el sub�rbol derecho
-            return self.search(root.right, val)
-        
-            
-    def erase_node(self, val):
-        if self.empty() == True: # Revisa si el arbol no esta vacio
-            print("El arbol esta vacio")
+
+    def insert_right_node(self, val, prev_val): # Funcion para meter un valor a la derecha
+        new_node = Node(val)
+        if self.empty() == True: # Si el arbol esta vacio
+            self.root = new_node # El nuevo nodo se vuelve en la raiz
+            new_node.is_root = True # El nuevo nodo se vuelve la raiz
         else:
-            erase = self.search(self.root, val) # Da la posicion del nodo que se quiere borrar
-            if self.weight == 1: # Checar si unicamente hay un valor en todo el arbol usando el peso
-                self.root = None
-                self.weight = 0
-            num_branches = self.count_branches(erase) # Funcion para saber numero de hijos
-            
-            if num_branches == 0: # Si el nodo no tiene hijos
-                if erase.is_left == True:
-                    erase.parent.left = None
-                else:
-                    erase.parent.right = None
-                self.weight -= 1
-                
+            prev_node = self.find_previous(prev_val, self.root)
+            prev_node.right = new_node # Agrega el nuevo nodo a la derecha del ultimo nodo agregado
+        check = self.check_binary_tree(self.root, val)
+        if check == "Incorrect":
+            print(check)
+            sys.exit()
+        self.weight += 1 # Se aumenta el peso del Arbol
 
-            elif num_branches == 1:# Si el nodo tiene 1 hijo
-                if erase.is_root == True: # Si el nodo a borrar es la raiz
-                    self.root = erase.left or erase.right # La raiz se actualiza al hijo de erase
-                    self.root.parent = None # Se le borra el apuntador del papa a la nueva raiz
+    def find_previous(self, val, root): 
+        if root is None:# Revisa si el árbol está vacío
+            return None
 
-                elif erase.is_left == True: # Revisar si el nodo a borrar es izquierdo
-                    erase.parent.left = erase.left or erase.right # Toma el valor del hijo de la variable que se va a borrar (erase)
-                    erase.parent.left.parent = erase.parent # El papa del hijo de erase se vuelve el padre de erase 
-                    erase.parent.left.is_left = True # Se defineel hijo de erase como variable izquierda al tomar el lugar de su papa
-                    erase.parent.left.is_right = False
-                    self.weight -= 1 # Se reduce el peso del arbol
-                    
-                elif erase.is_right == True: # Revisar si el nodo a borrar es derecho
-                    erase.parent.right = erase.left or erase.right 
-                    erase.parent.right.parent = erase.parent 
-                    erase.parent.right.is_left = False
-                    erase.parent.right.is_right = True
-                    self.weight -= 1        
-                    
+        
+        if root.val == val: # Si el nodo padre es la raiz
+            # Retorna los hijos si existen
+            return root 
+        
+        # Recorre el subárbol izquierdo
+        left = self.find_previous(val, root.left)
+        if left != None:
+            return left
 
-            else: # Si el nodo tiene 2 hijos
-                succesor = self.succesor(erase)
-                self.erase_node(succesor.val) #Se borra la variable sucesora
-                erase.val = succesor.val # Se actualiza el valor de la variable que se queria borrar al valor de la variable sucesora
-
-    def count_branches(self, root): # Funcion para saber numero de hijos
-        count = 0
-        if root.left != None:
-            count += 1
-        if root.right != None:
-            count += 1
-        return count
+        # Recorre el subárbol derecho
+        right = self.find_previous(val, root.right)
+        return right
     
-    def succesor(self, erase): # Busca el valor del subarbol derecho que hasta la izquierda 
-        temp = erase.right  
-        while temp.left:
-            temp = temp.left
-        return temp 
+    def check_binary_tree(self, root, val):
+        if root is None:  # Caso base: si el nodo es nulo, no se encontro el valor
+            return "Incorrect"
+        elif root.val == val:  # Si encontramos el nodo con el valor que buscamos
+            return "Correct"
+        elif root.val > val:  # Si el valor es menor, busca en el subarbol izquierdo
+            return self.check_binary_tree(root.left, val)
+        else:  # Si el valor es mayor, busca en el subarbol derecho
+            return self.check_binary_tree(root.right, val)
+
+
+    def PrintTree(self, root):
+        def h(root):
+            return 1 + max(h(root.left), h(root.right)) if root else -1  
+        nlevels = h(root)
+        width =  pow(2,nlevels+1)
+
+        q=[(root,0,width,'c')]
+        levels=[]
+
+        while(q):
+            node,level,x,align= q.pop(0)
+            if node:            
+                if len(levels)<=level:
+                    levels.append([])
+        
+                levels[level].append([node,level,x,align])
+                seg= width//(pow(2,level+1))
+                q.append((node.left,level+1,x-seg,'l'))
+                q.append((node.right,level+1,x+seg,'r'))
+
+        for i,l in enumerate(levels):
+            pre=0
+            preline=0
+            linestr=''
+            pstr=''
+            seg= width//(pow(2,i+1))
+            for n in l:
+                valstr= str(n[0].val)
+                if n[3]=='r':
+                    linestr+=' '*(n[2]-preline-1-seg-seg//2)+  '-'*(seg +seg//2)+'\\'
+                    preline = n[2] 
+                if n[3]=='l':
+                   linestr+=' '*(n[2]-preline-1)+'/' + '-'*(seg+seg//2)  
+                   preline = n[2] + seg + seg//2
+                pstr+=' '*(n[2]-pre-len(valstr))+valstr 
+                pre = n[2]
+            print(linestr)
+            print(pstr)   
+        
         
 tree = Binary_Tree()
 
 # Insertar nodos en el arbol
-n = int(input())
+n = int(input("n: "))
 while n>=100000:
     n = input("Error numero muy grande ")
 
-nums = []
-for i in range(n):
-    # Capturar Numero   indice Izquierdo    Indice Derecha 
-    #nums[i] = str(input())
-    pass
+tree_vals = []
+keys = []
 
-# 1 2 3
-# keys -1 <= key <= n
+for i in range(0,n):
+    nums = str(input(f" Introduce 3 num {i+1}: "))
+    l = [int(i) for i in nums.split(' ')] # convertir string a lista de int
+    tree_vals.append(l[0]) # Se guarda el primer valor como el valor a integrar al arbol
+    
+    while l[1]<-1 or l[1]>=n:  # Poner concidion para que los keys no excedan n y no sean menor a  -1
+        l[1] = int(input("Error el indice izquierdo ingresado no entra dentro de los valores establecidos: "))
+    keys.append(l[1]) # Se guarda el indice de lo que va a la izquierda en una lista 
+    
+    while l[2]<-1 or l[2]>= n:  # Poner concidion para que los keys no excedan n y no sean menor a  -1
+        l[2] = int(input("Error el indice derecho ingresado no entra dentro de los valores establecidos: "))
+    keys.append(l[2]) # Se guarda el indice de lo que va a la derecha en la misma lista
 
-# Preguntar como insertar los datos
-# Preguntar sobe las condicionales 
+print(f"tree_vals: {tree_vals} \n")
+print(f"keys: {keys} \n")
 
+tree.insert_left_node(tree_vals[0], 0) # Se agrega el root
 
+j = 0 # Indice
+i = 0 
+while j < len(keys):
+    # insertar izquierdo
+    if keys[j] != -1: # Si es -1 no se inserta nada
+        tree.insert_left_node(tree_vals[keys[j]], tree_vals[i]) # insertar valores de acuerdo a lo establecido 
 
-# nums = str(input("Introduce primero la cantidad de numeros que tendra tu lista y despues escribe los numeros de la lista \n (todo separado por espacio): "))
-# lista = []
-# l = [int(i) for i in nums.split(' ')] # convertir string a lista de int
-# for j in range(len(l)):
-#     if j == 0:
-#         pass
-#     else:
-#         lista.append(l[j])
+    #insertar derecho
+    if keys[j+1] != -1: # Si es -1 no se inserta nada
+        tree.insert_right_node(tree_vals[keys[j+1]], tree_vals[i]) # insertar valores de acuerdo a lo establecido 
+    j += 2
+    i += 1
+print("Correct")
