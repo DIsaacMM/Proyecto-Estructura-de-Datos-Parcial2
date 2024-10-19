@@ -81,7 +81,7 @@ class Binary_Tree:
 tree = Binary_Tree()
 
 # Insertar nodos en el arbol
-n = int(input("n: "))
+n = int(input())
 while n>=100000:
     n = input("Error numero muy grande ")
 
@@ -89,7 +89,7 @@ tree_vals = []
 keys = []
 
 for i in range(0,n):
-    nums = str(input(f" Introduce 3 num {i+1}: "))
+    nums = str(input())
     l = [int(i) for i in nums.split(' ')] # convertir string a lista de int
     tree_vals.append(l[0]) # Se guarda el primer valor como el valor a integrar al arbol
     
@@ -100,9 +100,6 @@ for i in range(0,n):
     while l[2]<-1 or l[2]>= n:  # Poner concidion para que los keys no excedan n y no sean menor a  -1
         l[2] = int(input("Error el indice derecho ingresado no entra dentro de los valores establecidos: "))
     keys.append(l[2]) # Se guarda el indice de lo que va a la derecha en la misma lista
-
-print(f"tree_vals: {tree_vals} \n")
-print(f"keys: {keys} \n")
 
 tree.insert_left_node(tree_vals[0], 0) # Se agrega el root
 
@@ -116,8 +113,8 @@ while j < len(keys):
     #insertar derecho
     if keys[j+1] != -1: # Si es -1 no se inserta nada
         tree.insert_right_node(tree_vals[keys[j+1]], tree_vals[i]) # insertar valores de acuerdo a lo establecido 
-    
     # Se aumentan los valores de los indices
     j += 2
     i += 1
 print("Correct")
+print(f"Codigo por: \n David Isaac Mijares Meza (32948) \n Steven Alexander McClellan Castro (37622) ")
